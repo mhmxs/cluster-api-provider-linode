@@ -144,12 +144,14 @@ CTLPTL ?= $(LOCALBIN)/ctlptl
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 TILT ?= $(LOCALBIN)/tilt
 ENVTEST ?= $(LOCALBIN)/setup-envtest
+MIRRORD := $(LOCALBIN)/mirrord
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v5.1.1
 CTLPTL_VERSION ?= v0.8.22
 CONTROLLER_TOOLS_VERSION ?= v0.13.0
 TILT_VERSION ?= 0.33.6
+MIRRORD_VERSION ?= 3.75.3
 
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary. If wrong version is installed, it will be removed before downloading.
@@ -183,3 +185,10 @@ $(TILT): $(LOCALBIN)
 envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+
+.PHONY: mirrord
+mirrord: $(MIRRORD) ## Download mirrord locally if necessary.
+$(MIRRORD): $(LOCALBIN)
+	test -s $(LOCALBIN)/mirrord && $(LOCALBIN)/mirrord --version | grep -q $(MIRRORD_VERSION) || \
+	(cd $(LOCALBIN) ; curl -fsSL https://github.com/metalbear-co/mirrord/releases/download/$(MIRRORD_VERSION)/mirrord_$(shell uname -s | tr '[:upper:]' '[:lower:]')_$(shell uname -m)) > $(MIRRORD)
+	@chmod +x $(MIRRORD)

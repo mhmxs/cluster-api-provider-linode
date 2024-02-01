@@ -93,7 +93,7 @@ e2etest: kind ctlptl tilt kuttl kustomize clusterctl envsubst manifests generate
 	@echo -n "LINODE_TOKEN=$(LINODE_TOKEN)" > config/default/.env.linode
 	$(CTLPTL) apply -f .tilt/ctlptl-config.yaml
 	$(TILT) ci --timeout 180s -f Tiltfile
-	$(KUTTL) test --config e2e/kuttl-config.yaml
+	ROOT_DIR=$(PWD) $(KUTTL) test --config e2e/kuttl-config.yaml
 
 ##@ Build
 

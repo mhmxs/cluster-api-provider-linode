@@ -3,7 +3,7 @@ kind: LinodeMachine
 metadata:
   name: linodemachine-sample
 spec:
-  region: us-southeast
+  region: us-sea
   type: g5-nanode-1
 status:
   ready: true

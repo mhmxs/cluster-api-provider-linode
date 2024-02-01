@@ -1,18 +1,24 @@
 MAKEFLAGS += -s
 
 runTestCase:
-	@T="$$(kuttl test --skip-delete --namespace $(NAMESPACE) $$(make _renderTestCase))" ;\
-	echo "$$T" | grep -s '0-step' ;\
-	echo "$$T" | grep -e '^PASS'
+	@T="$$(KUBECONFIG=$$ROOT_DIR/kubeconfig kuttl test --timeout 300 --skip-delete --namespace $(NAMESPACE) $(TC) 2>&1)" ;\
+	echo "$$T" |\
+		grep -v harness.go |\
+		grep -v ^=== |\
+		grep -v "running without a 'kuttl-test.yaml" |\
+		grep -v "creation of user-supplied namespace" |\
+		grep -v "not match file name regexp" |\
+		grep -v "kutt-test config testdirs is overridden" ;\
+	echo "$$T" | grep '^PASS'
 
-_renderTestCase:
+renderTestCase:
 	@D=$$(mktemp -d) ;\
 	mkdir -p $$D/step ;\
 	envsubst -i $(TPL) -o $$D/step/00-step.yaml ;\
 	echo -n $$D
 
 getKubeUid:
-	@kubectl get -o jsonpath='{.metadata.uid}' -n $(NAMESPACE) $R
+	@kubectl get -o jsonpath='{.metadata.uid}' -n $(NAMESPACE) $(OBJ)
 
 callLinodeApiGet:
-	@curl -s -H "Authorization: Bearer $(LINODE_TOKEN)" -H "X-Filter: $(F)" "https://api.linode.com/v4beta/$(U)"
+	@curl -s -H "Authorization: Bearer $(LINODE_TOKEN)" -H "X-Filter: $(FILTER)" "https://api.linode.com/v4beta/$(URI)"

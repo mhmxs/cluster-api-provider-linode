@@ -7,7 +7,6 @@ metadata:
     name: machine-sample
     uid: ${MACHINE_UID}
   name: linodemachine-sample
-  namespace: ${NAMESPACE}
 spec:
-  region: us-southeast
+  region: us-sea
   type: g5-nanode-1

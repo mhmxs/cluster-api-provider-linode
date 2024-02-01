@@ -1,5 +1,7 @@
 apiVersion: kuttl.dev/v1beta1
 kind: TestSuite
 testDirs:
-- e2e/basic
+- e2e/linodecluster-controller
+- e2e/linodemachine-controller
+- e2e/linodevpc-controller
 timeout: 300
